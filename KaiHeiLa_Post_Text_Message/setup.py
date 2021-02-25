@@ -11,7 +11,7 @@
 from setuptools import setup
 
 setup(name='KHL_POST_MESSAGE',
-      version='1.0.5',
+      version='1.0.6',
       description='KHL POST MESSAGE',
       author='YingHuo',
       author_email='xie@loli.fit',

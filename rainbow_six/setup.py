@@ -10,7 +10,7 @@
 # @Software: PyCharm
 from setuptools import setup
 setup(name='rainbow_six_find',
-      version='1.0.2',
+      version='1.0.5',
       description='rainbow_six_find',
       author='YingHuo',
       author_email='xie@loli.fit',

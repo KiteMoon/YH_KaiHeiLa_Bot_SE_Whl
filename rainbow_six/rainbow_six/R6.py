@@ -11,7 +11,7 @@
 import json
 import re
 import requests
-def get_r6_Foundation_info(message_text, target_id):
+def get_r6_Foundation_info(message_text, target_id,quote="",nonce="",temp_target_id=""):
 	print("进入彩虹六号处理视图层")
 	name = message_text
 	_get_tendai_card_url = "https://www.r6s.cn/v2/stats/index?username=" + name
@@ -64,4 +64,4 @@ def get_r6_Foundation_info(message_text, target_id):
 		"target_id": str(target_id),
 		"card_view": card_view
 	}
-	return message_data
+	return "10",target_id,card_view,quote,nonce,temp_target_id
