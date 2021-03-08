@@ -44,22 +44,6 @@ def bilibili_text_dynamic(bilibili_dynamic_get_json):
 	bilibili_dynamic_body = bilibili_dynamic_result_all["item"]["content"]#获取动态内容
 	print(bilibili_dynamic_name)
 	print(bilibili_dynamic_body)
-
-#--------------该字串为图片+文字动态/也可以单独图片使用---------------#
-def bilibili_png_dynamic(bilibili_dynamic_get_json):
-	if bilibili_dynamic_get_json["data"]["cards"][0]["extra"]["is_space_top"] == 1:
-		num = 1
-	else:num=0
-	print("该字串为图片+文字动态/也可以单独图片使用")
-	bilibili_dynamic_result_all = bilibili_dynamic_get_json["data"]["cards"][num]["card"]
-	bilibili_dynamic_result_all = json.loads(bilibili_dynamic_result_all)
-	bilibili_dynamic_name = bilibili_dynamic_get_json["data"]["cards"][num]["desc"]["user_profile"]["info"]["uname"]#昵称
-	bilibili_dynamic_body = bilibili_dynamic_result_all["item"]["description"]#动态内容
-	bilibili_dynamic_img = bilibili_dynamic_result_all["item"]["pictures"]#动态图片，需要for
-	print(bilibili_dynamic_name)
-	print(bilibili_dynamic_body)
-	for ccc in bilibili_dynamic_img:
-		print(ccc["img_src"])
 #--------------该字串为发布视频动态使用，正常运行，需要UID---------------#
 def bilibili_video_dynamic(bilibili_dynamic_get_json):
 	if bilibili_dynamic_get_json["data"]["cards"][0]["extra"]["is_space_top"] == 1:
@@ -79,6 +63,21 @@ def bilibili_video_dynamic(bilibili_dynamic_get_json):
 	print(bilibili_dynamic_aid)
 	print(bilibili_dynamic_img)
 	print(bilibili_dynamic_info)
+#--------------该字串为图片+文字动态/也可以单独图片使用---------------#
+def bilibili_png_dynamic(bilibili_dynamic_get_json):
+	if bilibili_dynamic_get_json["data"]["cards"][0]["extra"]["is_space_top"] == 1:
+		num = 1
+	else:num=0
+	print("该字串为图片+文字动态/也可以单独图片使用")
+	bilibili_dynamic_result_all = bilibili_dynamic_get_json["data"]["cards"][num]["card"]
+	bilibili_dynamic_result_all = json.loads(bilibili_dynamic_result_all)
+	bilibili_dynamic_name = bilibili_dynamic_get_json["data"]["cards"][num]["desc"]["user_profile"]["info"]["uname"]#昵称
+	bilibili_dynamic_body = bilibili_dynamic_result_all["item"]["description"]#动态内容
+	bilibili_dynamic_img = bilibili_dynamic_result_all["item"]["pictures"]#动态图片，需要for
+	print(bilibili_dynamic_name)
+	print(bilibili_dynamic_body)
+	for ccc in bilibili_dynamic_img:
+		print(ccc["img_src"])
 #--------------该字串转发视频使用,正常运行，需要UID---------------#
 def bilibili_share_video_dynamic(bilibili_dynamic_get_json):
 	if bilibili_dynamic_get_json["data"]["cards"][0]["extra"]["is_space_top"] == 1:
@@ -115,9 +114,20 @@ def bilibili_share_png_dynamic(bilibili_dynamic_get_json):
 	for num in range(0, (img_num)):
 		_img_url = ""
 		_img_url = (img_list[num]["img_src"]) + "@320w_267h_1e_1c.jpg"
+def bilibili_share_text_dynamic(bilibili_dynamic_get_json):
+	print("he")
+	if bilibili_dynamic_get_json["data"]["cards"][0]["extra"]["is_space_top"] == 1:
+		num = 1
+	else:num=0
+	bilibili_dynamic_result_all = bilibili_dynamic_get_json["data"]["cards"][num]["card"]  # 列表第一个索引是用户名，第二个是动态
+	bilibili_dynamic_result_all_json = json.loads(bilibili_dynamic_result_all)
+	print(bilibili_dynamic_result_all_json["user"]["uname"])  # 转发人的名称
+	print(bilibili_dynamic_result_all_json["item"]["content"])  # 转发人转发动态的蚊子
+	bilibili_dynamic_result_origin_json = json.loads(bilibili_dynamic_result_all_json["origin"])
+	print(bilibili_dynamic_result_origin_json["item"]["content"])  # 转发的动态主体文字
 def bilibili_dynamic(target_id,card_view,UID,quote="",nonce="",temp_target_id=""):
 	bilibili_dynamic_get_json = link_get(UID)
-	#bilibili_text_dynamic(bilibili_dynamic_get_json)
+	#bilibili_video_dynamic(bilibili_dynamic_get_json)
 	#bilibili_png_dynamic(bilibili_dynamic_get_json)
 	print(bilibili_dynamic_get_json)
 	ccc(bilibili_dynamic_get_json)
@@ -132,11 +142,16 @@ def bilibili_dynamic(target_id,card_view,UID,quote="",nonce="",temp_target_id=""
 	# 				try:bilibili_share_png_dynamic(bilibili_dynamic_get_json)
 	# 				except:print("出乎意料的类型")
 def ccc(bilibili_dynamic_get_json):
+
 	if bilibili_dynamic_get_json["data"]["cards"][0]["extra"]["is_space_top"] == 1:
 		num = 1
 	else:num=0
-	if "share_subtitle" in bilibili_dynamic_get_json["data"]["cards"][num]["card"]:
-		print("这是一个视频动态")#识别是转发视频还是播放视频
-	elif "aid" in bilibili_dynamic_get_json["data"]["cards"][num]["card"]:
+	bilibili_dynamic_get_jsons=json.loads(bilibili_dynamic_get_json["data"]["cards"][num]["card"])
+	print((bilibili_dynamic_get_jsons))
+	if "aid" in bilibili_dynamic_get_jsons:
+		print(type(bilibili_dynamic_get_json["data"]["cards"][num]["card"]))
+		print("这是一个视频动态")  # 识别是转发视频还是播放视频
+	elif "user" in bilibili_dynamic_get_jsons:
 		print("这是一个转发视频动态")  # 识别是转发视频还是播放视频
-bilibili_dynamic("1","1","21107642")
+	bilibili_share_text_dynamic(bilibili_dynamic_get_json)
+print(bilibili_dynamic("1","1","37958451"))
