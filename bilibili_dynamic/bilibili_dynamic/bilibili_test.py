@@ -148,10 +148,14 @@ def ccc(bilibili_dynamic_get_json):
 	else:num=0
 	bilibili_dynamic_get_jsons=json.loads(bilibili_dynamic_get_json["data"]["cards"][num]["card"])
 	print((bilibili_dynamic_get_jsons))
+	print(bilibili_dynamic_get_json)
+	del bilibili_dynamic_get_json["data"]["attentions"]
+	print(bilibili_dynamic_get_json)
 	if "aid" in bilibili_dynamic_get_jsons:
 		print(type(bilibili_dynamic_get_json["data"]["cards"][num]["card"]))
 		print("这是一个视频动态")  # 识别是转发视频还是播放视频
-	elif "user" in bilibili_dynamic_get_jsons:
-		print("这是一个转发视频动态")  # 识别是转发视频还是播放视频
-	bilibili_share_text_dynamic(bilibili_dynamic_get_json)
-print(bilibili_dynamic("1","1","37958451"))
+	elif "origin" in bilibili_dynamic_get_json["data"]["cards"][num]["desc"]:
+		print("这是一个转发类动态")  # 识别是转发视频还是播放视频
+	#bilibili_share_text_dynamic(bilibili_dynamic_get_json)
+	print(bilibili_dynamic_get_json)
+print(bilibili_dynamic("1","1","382651856"))
