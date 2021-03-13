@@ -83,6 +83,9 @@ def bilibili_share_video_dynamic(bilibili_dynamic_get_json):
 	if bilibili_dynamic_get_json["data"]["cards"][0]["extra"]["is_space_top"] == 1:
 		num = 1
 	else:num=0
+	print("进入转发视频")
+	print("下方为接收的数据")
+	print(bilibili_dynamic_get_json)
 	bilibili_dynamic_result_all = bilibili_dynamic_get_json["data"]["cards"][num]["card"] # 列表第一个索引是用户名，第二个是动态
 	bilibili_dynamic_result_all = json.loads(bilibili_dynamic_result_all)
 	bilibili_dynamic_name = bilibili_dynamic_get_json["data"]["cards"][num]["desc"]["user_profile"]["info"]["uname"]#稳定获取名称接口
@@ -114,6 +117,8 @@ def bilibili_share_png_dynamic(bilibili_dynamic_get_json):
 	for num in range(0, (img_num)):
 		_img_url = ""
 		_img_url = (img_list[num]["img_src"]) + "@320w_267h_1e_1c.jpg"
+		print(_img_url)
+
 def bilibili_share_text_dynamic(bilibili_dynamic_get_json):
 	print("he")
 	if bilibili_dynamic_get_json["data"]["cards"][0]["extra"]["is_space_top"] == 1:
@@ -121,15 +126,15 @@ def bilibili_share_text_dynamic(bilibili_dynamic_get_json):
 	else:num=0
 	bilibili_dynamic_result_all = bilibili_dynamic_get_json["data"]["cards"][num]["card"]  # 列表第一个索引是用户名，第二个是动态
 	bilibili_dynamic_result_all_json = json.loads(bilibili_dynamic_result_all)
-	print(bilibili_dynamic_result_all_json["user"]["uname"])  # 转发人的名称
-	print(bilibili_dynamic_result_all_json["item"]["content"])  # 转发人转发动态的蚊子
+	#print(bilibili_dynamic_result_all_json["user"]["uname"])  # 转发人的名称
+	#print(bilibili_dynamic_result_all_json["item"]["content"])  # 转发人转发动态的蚊子
 	bilibili_dynamic_result_origin_json = json.loads(bilibili_dynamic_result_all_json["origin"])
-	print(bilibili_dynamic_result_origin_json["item"]["content"])  # 转发的动态主体文字
+	#print(bilibili_dynamic_result_origin_json["item"]["content"])  # 转发的动态主体文字
 def bilibili_dynamic(target_id,card_view,UID,quote="",nonce="",temp_target_id=""):
 	bilibili_dynamic_get_json = link_get(UID)
 	#bilibili_video_dynamic(bilibili_dynamic_get_json)
 	#bilibili_png_dynamic(bilibili_dynamic_get_json)
-	print(bilibili_dynamic_get_json)
+	#print(bilibili_dynamic_get_json)
 	ccc(bilibili_dynamic_get_json)
 	# try:bilibili_text_dynamic(bilibili_dynamic_get_json)
 	# except:
@@ -146,16 +151,48 @@ def ccc(bilibili_dynamic_get_json):
 	if bilibili_dynamic_get_json["data"]["cards"][0]["extra"]["is_space_top"] == 1:
 		num = 1
 	else:num=0
-	bilibili_dynamic_get_jsons=json.loads(bilibili_dynamic_get_json["data"]["cards"][num]["card"])
-	print((bilibili_dynamic_get_jsons))
-	print(bilibili_dynamic_get_json)
+	print(num)
+	bilibili_dynamic_get_json_card=json.loads(bilibili_dynamic_get_json["data"]["cards"][num]["card"])
+	print("type")
+	print(bilibili_dynamic_get_json["data"]["cards"][num]["desc"]["type"])
+	#print(bilibili_dynamic_get_json)
 	del bilibili_dynamic_get_json["data"]["attentions"]
 	print(bilibili_dynamic_get_json)
-	if "aid" in bilibili_dynamic_get_jsons:
-		print(type(bilibili_dynamic_get_json["data"]["cards"][num]["card"]))
-		print("这是一个视频动态")  # 识别是转发视频还是播放视频
-	elif "origin" in bilibili_dynamic_get_json["data"]["cards"][num]["desc"]:
+	print((bilibili_dynamic_get_json_card))
+	# 这里用于执行除转发的动态
+	if bilibili_dynamic_get_json["data"]["cards"][num]["desc"]["type"] == 1:
 		print("这是一个转发类动态")  # 识别是转发视频还是播放视频
+		print(bilibili_dynamic_get_json["data"]["cards"][num]["desc"]["origin"])
+		_bilibili_dynamic_type = bilibili_dynamic_get_json["data"]["cards"][num]["desc"]["origin"]["type"]
+		print(_bilibili_dynamic_type)
+		if _bilibili_dynamic_type == 2:#逻辑判断，转发图片
+			print(bilibili_dynamic_get_json["data"]["cards"][num]["card"])
+			print("hello")
+			bilibili_share_png_dynamic(bilibili_dynamic_get_json)
+		elif _bilibili_dynamic_type == 8:#逻辑判断，转发视频
+			print("rush")
+			bilibili_share_video_dynamic(bilibili_dynamic_get_json)
+	# 这里用于执行除转发之外的动态
+	elif "bvid" in bilibili_dynamic_get_json["data"]["cards"][num]["desc"]:
+		#print(type(bilibili_dynamic_get_json["data"]["cards"][num]["card"]))
+		print("这是一个视频动态")  # 识别是转发视频还是播放视频
+		bilibili_video_dynamic(bilibili_dynamic_get_json)
+	elif bilibili_dynamic_get_json["data"]["cards"][num]["desc"]["type"] == 4:
+		print("检测到文字")
+		bilibili_text_dynamic(bilibili_dynamic_get_json)
+	elif bilibili_dynamic_get_json["data"]["cards"][num]["desc"]["type"] == 2:
+		print("检测到图片+文字")
+		bilibili_png_dynamic(bilibili_dynamic_get_json)
+
 	#bilibili_share_text_dynamic(bilibili_dynamic_get_json)
-	print(bilibili_dynamic_get_json)
-print(bilibili_dynamic("1","1","382651856"))
+	#print(bilibili_dynamic_get_json)
+# print("这是转发视频动态态")
+# (bilibili_dynamic("1","1","2863937"))
+# print("-----------------------")
+# print("这是视频动态")
+# (bilibili_dynamic("1","1","82363089"))
+# print("-----------------------")
+# print("这是文字")
+# (bilibili_dynamic("1","1","18149131"))
+# print("-----------------------")
+bilibili_dynamic("1","1","392979")
