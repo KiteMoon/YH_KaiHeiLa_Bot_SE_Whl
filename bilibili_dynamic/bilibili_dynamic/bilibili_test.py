@@ -37,7 +37,7 @@ def link_get(UID):
 # if bilibili_dynamic_get_json["data"]["cards"][0]["extra"]["is_space_top"] == 1:
 # 	print("这是置顶")
 # --------------该字串为单独发文字动态使用---------------#
-def bilibili_text_dynamic(bilibili_dynamic_get_json):#这里导入一下decs，方便编写代码
+def bilibili_text_dynamic(bilibili_dynamic_get_json):
 	if bilibili_dynamic_get_json["data"]["cards"][0]["extra"]["is_space_top"] == 1:
 		num = 1
 	else:
@@ -51,11 +51,12 @@ def bilibili_text_dynamic(bilibili_dynamic_get_json):#这里导入一下decs，�
 	bilibili_dynamic_name = bilibili_dynamic_get_json["data"]["cards"][num]["desc"]["user_profile"]["info"][
 		"uname"]  # 稳定获取名称接口
 	bilibili_dynamic_body = bilibili_dynamic_result_all["item"]["content"]  # 获取动态内容
-	print(bilibili_dynamic_name)
-	print(bilibili_dynamic_body)
-	_content1 = "昵称:" + str(bilibili_dynamic_name) + "\nUID:" + str(bilibili_dynamic_result_all["user"]["uid"])\
-	+ "\n动态ID:" +str(bilibili_dynamic_desc["dynamic_id_str"])\
-	           +"\n简介"+ str(bilibili_dynamic_desc["user_profile"]["sign"])+"\n动态内容:" + str(bilibili_dynamic_body)
+	#print(bilibili_dynamic_name)
+	#print(bilibili_dynamic_body)
+	_content1 = "系统订阅的用户更新了\n" + "昵称:" + str(bilibili_dynamic_name) + "\nUID:" + str(
+		bilibili_dynamic_result_all["user"]["uid"]) \
+	            + "\n动态ID:" + str(bilibili_dynamic_desc["dynamic_id_str"]) \
+	            + "\n简介" + str(bilibili_dynamic_desc["user_profile"]["sign"]) + "\n动态内容:\n" + str(bilibili_dynamic_body)
 	print(_content1)
 	_content2 = "**动态内容**:\n" + str(bilibili_dynamic_body)
 	card_view = [
@@ -73,7 +74,7 @@ def bilibili_text_dynamic(bilibili_dynamic_get_json):#这里导入一下decs，�
 					"mode": "right",
 					"accessory": {
 						"type": "image",
-						"src":str(bilibili_dynamic_desc["user_profile"]["info"]["face"]) ,
+						"src": str(bilibili_dynamic_desc["user_profile"]["info"]["face"]),
 						"size": "lg"
 					}
 				},
@@ -84,7 +85,7 @@ def bilibili_text_dynamic(bilibili_dynamic_get_json):#这里导入一下decs，�
 					"type": "section",
 					"text": {
 						"type": "kmarkdown",
-						"content":_content2
+						"content": _content2
 					}
 				},
 				{
@@ -93,7 +94,8 @@ def bilibili_text_dynamic(bilibili_dynamic_get_json):#这里导入一下decs，�
 						{
 							"type": "button",
 							"theme": "primary",
-							"value": "https://t.bilibili.com/"+str(bilibili_dynamic_desc["dynamic_id_str"])+"?tab=2",
+							"value": "https://t.bilibili.com/" + str(
+								bilibili_dynamic_desc["dynamic_id_str"]) + "?tab=2",
 							"click": "link",
 							"text": {
 								"type": "plain-text",
@@ -105,8 +107,9 @@ def bilibili_text_dynamic(bilibili_dynamic_get_json):#这里导入一下decs，�
 			]
 		}
 	]
-	print(card_view)
-	print(json.dumps(card_view,ensure_ascii=False))
+	#print(card_view)
+	print(json.dumps(card_view, ensure_ascii=False))
+
 
 # --------------该字串为发布视频动态使用，正常运行，需要UID---------------#
 def bilibili_video_dynamic(bilibili_dynamic_get_json):
@@ -114,6 +117,7 @@ def bilibili_video_dynamic(bilibili_dynamic_get_json):
 		num = 1
 	else:
 		num = 0
+	bilibili_dynamic_desc = bilibili_dynamic_get_json["data"]["cards"][num]["desc"]
 	print("该字串为发布视频动态使用，正常运行，需要UID")
 	bilibili_dynamic_result_all = bilibili_dynamic_get_json["data"]["cards"][num]["card"]
 	bilibili_dynamic_result_all = json.loads(bilibili_dynamic_result_all)
@@ -129,6 +133,55 @@ def bilibili_video_dynamic(bilibili_dynamic_get_json):
 	print(bilibili_dynamic_aid)
 	print(bilibili_dynamic_img)
 	print(bilibili_dynamic_info)
+	card_view = [
+		{
+			"type": "card",
+			"theme": "secondary",
+			"size": "lg",
+			"modules": [
+				{
+					"type": "section",
+					"text": {
+						"type": "plain-text",
+						"content": "用户订阅的UP主：" + bilibili_dynamic_name + "更新了视频"
+					}
+				},
+				{
+					"type": "section",
+					"text": {
+						"type": "plain-text",
+						"content": "视频名称:" + str(bilibili_dynamic_title) + "\n作者:" + str(
+							bilibili_dynamic_name) + "\n简介:" + bilibili_dynamic_info
+					}
+				},
+				{
+					"type": "image-group",
+					"elements": [
+						{
+							"type": "image",
+							"src": bilibili_dynamic_img
+						}
+					]
+				},
+				{
+					"type": "action-group",
+					"elements": [
+						{
+							"type": "button",
+							"theme": "primary",
+							"value": "https://www.bilibili.com/video" + str(bilibili_dynamic_aid),
+							"click": "link",
+							"text": {
+								"type": "plain-text",
+								"content": "跳转到视频"
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+	print(json.dumps(card_view,ensure_ascii=False))
 
 
 # --------------该字串为图片+文字动态/也可以单独图片使用---------------#
@@ -279,4 +332,4 @@ def ccc(bilibili_dynamic_get_json):
 # print("这是文字")
 # (bilibili_dynamic("1","1","18149131"))
 # print("-----------------------")
-bilibili_dynamic("1", "1", "18149131")
+bilibili_dynamic("1", "1", "330383888")
