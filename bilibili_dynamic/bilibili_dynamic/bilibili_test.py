@@ -9,6 +9,7 @@
 # @File    : bilibili_test.py
 # @Software: PyCharm
 import requests
+import pymysql
 import json
 import time
 import datetime
@@ -602,7 +603,14 @@ def ccc(bilibili_dynamic_get_json):
 		print(bilibili_png_dynamic(bilibili_dynamic_get_json))
 		return (bilibili_png_dynamic(bilibili_dynamic_get_json))
 	print(bilibili_dynamic_get_json)
-
+def get_dynamic_all_list(UID):
+	_dynamic_all_id_list =[]
+	_dynamic_card = link_get(UID)["data"]["cards"]
+	_dynamic_num = len(_dynamic_card)
+	for num in range(0,_dynamic_num-1):
+		_dynamic_id = _dynamic_card[num]["desc"]["dynamic_id"]
+		_dynamic_all_id_list.append(_dynamic_id)
+	return _dynamic_all_id_list
 
 # bilibili_share_text_dynamic(bilibili_dynamic_get_json)
 # print(bilibili_dynamic_get_json)
@@ -620,4 +628,4 @@ def ccc(bilibili_dynamic_get_json):
 # print("这是文字+图片直发")
 # print(bilibili_dynamic("1", "1", "928123"))
 # print("-----------分享图片------------")
-print(bilibili_dynamic("1", "1", "37958451"))
+#print(bilibili_dynamic("1", "1", "37958451"))
