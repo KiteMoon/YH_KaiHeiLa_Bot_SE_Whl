@@ -212,10 +212,7 @@ def bilibili_png_dynamic(bilibili_dynamic_get_json):
 	img_num = (len(bilibili_dynamic_img))
 	print(img_num)
 	_elements = []
-	# for ccc in bilibili_dynamic_img:
-	# 	print(ccc["img_src"])
 	for num in range(0, (img_num)):  # 这里用于生成多图动态的图片部分
-		#_img_url = (img_list[num]["img_src"]) + "@320w_267h_1e_1c.jpg"
 		element = {
 			"type": "image",
 			"src": bilibili_dynamic_img[num]["img_src"]
@@ -223,10 +220,6 @@ def bilibili_png_dynamic(bilibili_dynamic_get_json):
 		_elements.append(element)
 	print(_elements)
 	bilibili_dynamic_desc = bilibili_dynamic_get_json["data"]["cards"][num]["desc"]
-	# bilibili_dynamic_result_all = bilibili_dynamic_get_json["data"]["cards"][num]["card"]  # 列表第一个索引是用户名，第二个是动态
-	# bilibili_dynamic_result_all_json = json.loads(bilibili_dynamic_result_all)
-	# print("wdnmd")
-	# print(bilibili_dynamic_result_all_json)
 	times = time_num(bilibili_dynamic_desc["timestamp"])
 	card_view = [
 		{
@@ -453,10 +446,11 @@ def ccc(bilibili_dynamic_get_json):
 # (bilibili_dynamic("1","1","2863937"))
 print("-----------------------")
 print("这是视频动态")
-print(bilibili_dynamic("1","1","82363089"))
+print(bilibili_dynamic("1","1","18149131"))
 print("-----------------------")
 print("这是文字")
-print(bilibili_dynamic("1","1","18149131"))
-print(bilibili_dynamic("1","1","431646218"))
-# print("-----------------------")
-# print(bilibili_dynamic("1", "1", "38453374"))
+print(bilibili_dynamic("1","1","37958451"))
+print("这是文字+图片直发")
+print(bilibili_dynamic("1","1","928123"))
+print("-----------分享图片------------")
+print(bilibili_dynamic("1", "1", "38453374"))
