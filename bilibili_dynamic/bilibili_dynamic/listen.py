@@ -32,5 +32,14 @@ def find_sql_UID_dynamic(UID):
 
 	_result_dynamic=json.loads(results[0][2])
 	return _result_dynamic
-print(find_sql_UID_dynamic(37958451))
+ccc = (find_sql_UID_dynamic(37958451))
+for _dynamic_id in cc:
+	print(_dynamic_id)
+	print(ccc)
+	if _dynamic_id in ccc:
+		print("不包含")
+		print(ccc)
+	else:print("包含")
+
+
 # for kjsdf in find_sql_UID_dynamic(37958451):
