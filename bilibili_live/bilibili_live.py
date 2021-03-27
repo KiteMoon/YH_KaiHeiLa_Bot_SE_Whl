@@ -1,7 +1,7 @@
 #!/usr/bin/python3.7
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 桜火, Inc. All Rights Reserved 
+# Copyright (C) 2021 桜火, Inc. All Rights Reserved
 #
 # @Time    : 2021/3/20 18:53
 # @Author  : 桜火
@@ -14,21 +14,25 @@ import json
 import configparser
 import time
 import random
+
 config_info = configparser.ConfigParser()
 fui = config_info.read("config.ini")
-mysql_info_host = config_info.get("mysql","host")
-mysql_info_name = config_info.get("mysql","db_name")
-mysql_info_username = config_info.get("mysql","username")
-mysql_info_password = config_info.get("mysql","password")
-db = pymysql.connect(host=mysql_info_host, user=mysql_info_username, password=mysql_info_password, database=mysql_info_name)
+mysql_info_host = config_info.get("mysql", "host")
+mysql_info_name = config_info.get("mysql", "db_name")
+mysql_info_username = config_info.get("mysql", "username")
+mysql_info_password = config_info.get("mysql", "password")
+kaiheila_roomid = config_info.get("kaiheila", "room_id")
+db = pymysql.connect(host=mysql_info_host, user=mysql_info_username, password=mysql_info_password,
+                     database=mysql_info_name)
 cursor = db.cursor()
 bot_header = {
-	"Authorization":"Bot 1/MTAxNjA=/ugnbLazYqwKY8+wFl+65gA=="
+	"Authorization": "Bot 1/MTAxNjA=/ugnbLazYqwKY8+wFl+65gA=="
 }
+
 
 def bilibili_live(UID):
 	bilibili_url = "https://api.bilibili.com/x/space/acc/info?mid=" + str(UID) + "&jsonp=jsonp"
-	#print(bilibili_url)
+	# print(bilibili_url)
 	headers = {
 		"origin": "https://space.bilibili.com",
 		"referer": "https://space.bilibili.com/",
@@ -45,15 +49,15 @@ def bilibili_live(UID):
 	if bilibili_live_json["code"] == -404:
 		print("error,没有找到这个UP")
 		return {"code": "404"}
-	if str(bilibili_live_json["data"]["live_room"]["liveStatus"])=="0":
+	if str(bilibili_live_json["data"]["live_room"]["liveStatus"]) == "0":
 		_sql = "UPDATE BILIBILI_LIVE SET LIVE_TYPE = 0 WHERE UID = {}".format(UID)
-		#print(_sql)
+		# print(_sql)
 		cursor.execute(_sql)
 		db.commit()
 		print("检测到主播并未开播，操作数据库成功")
 
 	return {
-		"code":"200",
+		"code": "200",
 		"name": (bilibili_live_json["data"]["name"]),
 		"face_img": (str(bilibili_live_json["data"]["face"])),
 		"live_type": (str(bilibili_live_json["data"]["live_room"]["liveStatus"])),
@@ -63,13 +67,15 @@ def bilibili_live(UID):
 		"live_url": (str(bilibili_live_json["data"]["live_room"]["url"])),
 		"live_cover_img": (str(bilibili_live_json["data"]["live_room"]["cover"]))
 	}
+
+
 def cardview_post(UID):
 	live_all = (bilibili_live(UID))
 	_sql_find = "SELECT LIVE_TYPE FROM BILIBILI_LIVE WHERE UID={}".format(UID)
 	cursor.execute(_sql_find)
 	UID_live_type = cursor.fetchall()
 
-	UID_live_type =(UID_live_type[0][0])
+	UID_live_type = (UID_live_type[0][0])
 	if live_all["code"] == "200":
 		card_view = [
 			{
@@ -146,36 +152,46 @@ def cardview_post(UID):
 			}
 		]
 		card_view_json = (json.dumps(card_view, ensure_ascii=False))
-		#print(live_all["live_type"])
+		# print(live_all["live_type"])
 		if live_all["live_type"] == "1":
-			#print(UID_live_type)
+			# print(UID_live_type)
 			if UID_live_type == 1:
 				print("主播昵称：" + live_all["name"])
 				print("主播状态：直播中")
 				print("检测到之前已经推送了\n跳过推送")
 				return ("跳过推送")
-			else: post_json = {
-			"type":"10",
-			"target_id":"5157605841527991",
-			"content":card_view_json,
-			}
-			(requests.post(headers=bot_header,data=post_json,url="https://www.kaiheila.cn/api/v3/message/create").text)
+			else:
+				post_json = {
+					"type": "10",
+					"target_id": str(kaiheila_roomid),
+					"content": card_view_json,
+				}
+			print("主播昵称：" + live_all["name"])
+			print("主播状态：直播中")
+			print("检测到之前没有推送\n发起推送")
+			(requests.post(headers=bot_header, data=post_json,
+			               url="https://www.kaiheila.cn/api/v3/message/create").text)
+			_sql_add = "UPDATE BILIBILI_LIVE SET LIVE_TYPE = 1 WHERE UID = {}".format(UID)
+			cursor.execute(_sql_add)
+			db.commit()
 		elif live_all["live_type"] == "0":
 			print("主播昵称：" + live_all["name"])
 			print("主播没有开播，不推送")
-			print("主播状态：直播中")
+			print("主播状态：未开播")
 			return 0
-	else:print("error,找不到")
+	else:
+		print("error,找不到")
+
+
 sql = "SELECT UID FROM BILIBILI_LIVE"
 cursor.execute(sql)
 UID_list = cursor.fetchall()
 if __name__ == '__main__':
-	while True:
-		for UID in UID_list:
-			print("-------------开始查询主播ID：" + str(UID[0]) + "-------------")
-			time_num = random.randint(60,120)
-			cardview_post(UID[0])
-			time.sleep(10)
+
+	for UID in UID_list:
+		print("-------------开始查询主播ID：" + str(UID[0]) + "-------------")
+		time_num = random.randint(60, 120)
+		cardview_post(UID[0])
+		# time.sleep(10)
 		print("数据库全库遍历完成，进入休眠，下次推送时间为:{}秒".format(time_num))
-		time.sleep(time_num)
 
